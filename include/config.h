@@ -7,7 +7,7 @@
 #include <variant>
 
 struct Config {
-    Config(std::ifstream & file) {
+    explicit Config(std::ifstream & file) {
         std::string line;
         while (std::getline(file, line)) {
             auto [name, value] = split(line);
