@@ -5,47 +5,31 @@
 #include <vector>
 #include <map>
 #include <variant>
+#include <iostream>
 
 struct Config {
     explicit Config(std::ifstream & file) {
+        if (!file.is_open()) {
+            throw std::runtime_error("Could not open config file");
+        }
         std::string line;
         while (std::getline(file, line)) {
             auto [name, value] = split(line);
-            std::istringstream val(value);
-            if(m_fields.contains(name)){
-                if(std::holds_alternative<std::size_t>(m_fields[name])){
-                    std::size_t tmp;
-                    val >> tmp;
-                    m_fields[name] = tmp;
-                }
-                else if(std::holds_alternative<std::int64_t>(m_fields[name])) {
-                    std::int64_t tmp;
-                    val >> tmp;
-                    m_fields[name] = tmp;
-                }
-            }
+            m_param[name] = value;
         }
     }
 
     auto operator[](std::string && str){
-        return m_fields[str];
+        return m_param[str];
     }
 
     auto size() {
-        return m_fields.size();
-    }
-private:
-    std::pair<std::string, std::string> split(const std::string & line) {
-        std::stringstream line_stream(line);
-        std::string name, value;
-        line_stream >> name;
-        line_stream >> value;
-        return std::make_pair(name, value);
+        return m_param.size();
     }
 
-    std::map<const std::string, std::variant<std::size_t, std::int64_t>> m_fields{
-            {"position", std::int64_t(0) },
-            {"shift", std::int64_t(0) },
-            {"delay", std::size_t(0) }
-    };
+    friend std::ostream& operator<<(std::ostream& os, const Config& config);
+private:
+    std::map<const std::string, std::string> m_param;
+
+    std::pair<std::string , std::string> split(const std::string & line);
 };

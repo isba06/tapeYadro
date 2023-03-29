@@ -18,19 +18,19 @@ struct Tape : public ITape {
     std::streampos pos_output() override;
     void write(const int & value) override;
     int read() override;
-    std::size_t size();
+    std::string getFilename();
     bool is_open();
     bool eof();
-    std::streampos filesize();
-    explicit Tape(std::string && filename)
+    explicit Tape(std::string && filename) : m_filename(filename)
     {
-        m_file.open(filename, std::ios::in);
+        m_file.open(m_filename, std::ios::in);
         if(!m_file.is_open()) {
-            m_file.open(filename, std::ios::out);
+            m_file.open(m_filename, std::ios::out);
         }
     }
     Tape(Tape && tape) : m_file(std::move(tape.m_file)) {}
     ~Tape() override { m_file.close(); }
 private:
+    std::string m_filename;
     std::fstream m_file;
 };

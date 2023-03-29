@@ -55,25 +55,6 @@ bool Tape::is_open() {
 bool Tape::eof() {
     return m_file.eof();
 }
-
-std::size_t Tape::size() {
-    std::size_t s = 0;
-    if(is_open()) {
-        auto tmp = m_file.tellg();
-        m_file.seekg(0);
-        while (!eof()) {
-            ++s;
-            forward();
-        }
-        m_file.seekg(tmp);
-    }
-    return s;
-}
-
-std::streampos Tape::filesize() {
-    auto tmp = m_file.tellg();
-    m_file.seekg(0, std::ios::end);
-    auto end_pos = m_file.tellg();
-    m_file.seekg(tmp);
-    return end_pos;
+std::string Tape::getFilename() {
+    return m_filename;
 }
