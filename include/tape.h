@@ -2,8 +2,8 @@
 #include <fstream>
 
 struct ITape {
-    virtual void forward() = 0;
-    virtual void back() = 0;
+    virtual void move_forward() = 0;
+    virtual void move_backward() = 0;
     virtual int read() = 0;
     virtual void write(const int & value) = 0;
     virtual std::streampos pos_input() = 0;
@@ -12,8 +12,8 @@ struct ITape {
 };
 
 struct Tape : public ITape {
-    void forward() override;
-    void back() override;
+    void move_forward() override;
+    void move_backward() override;
     std::streampos pos_input() override;
     std::streampos pos_output() override;
     void write(const int & value) override;

@@ -1,28 +1,25 @@
 #include "tape.h"
 #include <iostream>
-void Tape::forward() {
-
-    while(!m_file.eof() && std::isdigit(m_file.peek())) { // убрать eof
-        m_file.seekg(1, std::ios::cur);
+void Tape::move_forward() {
+    auto pos = m_file.tellg();
+    std::string line;
+    std::getline(m_file, line);
+    pos = m_file.tellg();
+    if(pos != -1) {
+        m_file.seekg(pos, std::ios::beg);
     }
-    while(!m_file.eof() && std::isspace(m_file.peek())) {
-        m_file.seekg(1, std::ios::cur);
-    }
-   // m_file.seekp(m_file.tellg());
 }
 
-void Tape::back() {
-    //tellg==tellp
-    if(m_file.tellg() > 0) {
+void Tape::move_backward() {
+    if (m_file.tellg() == 0) {
+        return;
+    }
+    m_file.seekg(-1, std::ios::cur);
+    do {
         m_file.seekg(-1, std::ios::cur);
-        while(std::isspace(m_file.peek()) && m_file.tellg() > 0){
-            m_file.seekg(-1, std::ios::cur);
-        }
-        while(std::isdigit(m_file.peek()) && m_file.tellg() > 0){
-            m_file.seekg(-1, std::ios::cur);
-        }
+    } while (!std::isspace(m_file.peek()) && m_file.tellg() > 0);
+    if (m_file.tellg() != 0) {
         m_file.seekg(1, std::ios::cur);
-       // m_file.seekp(m_file.tellg());
     }
 }
 
